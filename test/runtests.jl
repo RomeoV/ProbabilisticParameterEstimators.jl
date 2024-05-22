@@ -1,5 +1,5 @@
 using Test
-using ParameterEstimators
+using ProbabilisticParameterEstimators
 using Distributions
 using LinearAlgebra
 
