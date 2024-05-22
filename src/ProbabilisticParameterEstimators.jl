@@ -1,7 +1,7 @@
 module ProbabilisticParameterEstimators
 import BlockDiagonals: BlockDiagonal
 import LinearAlgebra: Diagonal, lu, diag, I
-import Distributions: Normal, MvNormal, var, cov, fit
+import Distributions: Normal, MvNormal, var, cov, fit, Distribution, Univariate, Continuous, product_distribution
 import Turing: @model, sample, NUTS
 import Logging: with_logger, ConsoleLogger, Warn
 import Accessors: @set
@@ -12,7 +12,7 @@ import ForwardDiff.jacobian
 
 import Base: show
 
-export UncorrGaussianNoiseModel, CorrGaussianNoiseModel
+export UncorrGaussianNoiseModel, CorrGaussianNoiseModel, UncorrProductNoiseModel
 export MCMCEstimator, LSQEstimator, LinearApproxEstimator
 export predictsamples, predictdist
 export mvnoisedistribution, covmatrix
@@ -20,31 +20,37 @@ export mvnoisedistribution, covmatrix
 abstract type AbstractNoiseModel end
 abstract type UncorrNoiseModel <: AbstractNoiseModel end
 struct UncorrGaussianNoiseModel{DT} <: UncorrNoiseModel where {DT<:Union{<:MvNormal,<:Normal}}
-    noisemodels::Vector{DT}
+    noisedistributions::Vector{DT}
 end
-struct UncorrProductNoiseModel <: UncorrNoiseModel end
+struct UncorrProductNoiseModel{DT} <: UncorrNoiseModel where {DT<:Distribution{Univariate, Continuous}}
+    noisedistributions::Vector{DT}
+end
 struct CorrGaussianNoiseModel{DT} <: AbstractNoiseModel where {DT<:MvNormal}
-    noisemodel::DT
+    noisedistribution::DT
 end
 
 function covmatrix(::AbstractNoiseModel) end
 function mvnoisedistribution(::AbstractNoiseModel) end
 
 covmatrix(model::UncorrGaussianNoiseModel{<:Normal}) =
-    Diagonal(var.(model.noisemodels))
+    Diagonal(var.(model.noisedistributions))
 covmatrix(model::UncorrGaussianNoiseModel{<:MvNormal}) =
-    BlockDiagonal(cov.(model.noisemodels))
+    BlockDiagonal(cov.(model.noisedistributions))
 covmatrix(model::CorrGaussianNoiseModel) =
-    cov(model.noisemodel)
+    cov(model.noisedistribution)
+covmatrix(model::UncorrProductNoiseModel) =
+    cov(product_distribution(model.noisedistributions))
 
 mvnoisedistribution(model::UncorrGaussianNoiseModel{<:Normal}) =
-    MvNormal(zeros(length(model.noisemodels)),
+    MvNormal(zeros(length(model.noisedistributions)),
              covmatrix(model))
 mvnoisedistribution(model::UncorrGaussianNoiseModel{<:MvNormal}) =
-    MvNormal(zeros(sum(length.(model.noisemodels))),
+    MvNormal(zeros(sum(length.(model.noisedistributions))),
              covmatrix(model))
 mvnoisedistribution(model::CorrGaussianNoiseModel) =
-    model.noisemodel
+    model.noisedistribution
+mvnoisedistribution(model::UncorrProductNoiseModel) =
+    product_distribution(model.noisedistributions)
 
 
 abstract type EstimationMethod end
