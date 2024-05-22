@@ -10,6 +10,8 @@ import NonlinearSolve.ReturnCode
 import NonlinearSolve
 import ForwardDiff.jacobian
 
+import Base: show
+
 export UncorrGaussianNoiseModel
 export MCMCEstimator, LSQEstimator, LinearApproxEstimator
 export predictsamples, predictdist
@@ -41,6 +43,7 @@ mvnoisedistribution(model::UncorrGaussianNoiseModel{<:MvNormal}) =
 abstract type EstimationMethod end
 function predictsamples(::EstimationMethod, xs, ys, noise_model, nsamples) end
 function predictdistr(::EstimationMethod, xs, ys, noise_model) end
+Base.show(io::Base.IO, est::EstimationMethod) = print(io, typeof(est))
 
 include("mcmcestimator.jl")
 include("lsqestimator.jl")
