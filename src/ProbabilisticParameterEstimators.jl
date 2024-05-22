@@ -42,4 +42,6 @@ function predictsamples(::EstimationMethod, xs, ys, noise_model, nsamples) end
 function predictdistr(::EstimationMethod, xs, ys, noise_model) end
 
 include("mcmcestimator.jl")
+include("lsqestimator.jl")
+
 end # module ProbabilisticParameterEstimators
