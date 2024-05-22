@@ -1,7 +1,7 @@
 name = "ProbabilisticParameterEstimators"
 uuid = "0098cf3f-3e1e-4f11-b01c-dd9dec1b3374"
 authors = ["Romeo Valentin <romeov@stanford.edu>"]
-version = "0.1.0"
+version = "0.2.0"
 
 [deps]
 BlockDiagonals = "0a1fb500-61f7-11e9-3c65-f5ef3456f9f0"
