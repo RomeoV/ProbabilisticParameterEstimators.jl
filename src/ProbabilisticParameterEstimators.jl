@@ -12,7 +12,7 @@ import ForwardDiff.jacobian
 
 import Base: show
 
-export UncorrGaussianNoiseModel
+export UncorrGaussianNoiseModel, CorrGaussianNoiseModel
 export MCMCEstimator, LSQEstimator, LinearApproxEstimator
 export predictsamples, predictdist
 export mvnoisedistribution, covmatrix
@@ -23,7 +23,9 @@ struct UncorrGaussianNoiseModel{DT} <: UncorrNoiseModel where {DT<:Union{<:MvNor
     noisemodels::Vector{DT}
 end
 struct UncorrProductNoiseModel <: UncorrNoiseModel end
-struct CorrGaussianNoiseModel <: AbstractNoiseModel end
+struct CorrGaussianNoiseModel{DT} <: AbstractNoiseModel where {DT<:MvNormal}
+    noisemodel::DT
+end
 
 function covmatrix(::AbstractNoiseModel) end
 function mvnoisedistribution(::AbstractNoiseModel) end
@@ -32,12 +34,17 @@ covmatrix(model::UncorrGaussianNoiseModel{<:Normal}) =
     Diagonal(var.(model.noisemodels))
 covmatrix(model::UncorrGaussianNoiseModel{<:MvNormal}) =
     BlockDiagonal(cov.(model.noisemodels))
+covmatrix(model::CorrGaussianNoiseModel) =
+    cov(model.noisemodel)
+
 mvnoisedistribution(model::UncorrGaussianNoiseModel{<:Normal}) =
     MvNormal(zeros(length(model.noisemodels)),
              covmatrix(model))
 mvnoisedistribution(model::UncorrGaussianNoiseModel{<:MvNormal}) =
     MvNormal(zeros(sum(length.(model.noisemodels))),
              covmatrix(model))
+mvnoisedistribution(model::CorrGaussianNoiseModel) =
+    model.noisemodel
 
 
 abstract type EstimationMethod end

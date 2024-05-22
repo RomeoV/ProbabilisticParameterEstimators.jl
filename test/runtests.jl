@@ -58,4 +58,53 @@ end
             @test mean(pred) ≈ θtrue rtol = 1e-1
         end
     end
+    @testset "correlated gaussian noise" begin
+        f(xs, ps) = sum(enumerate(zip(ps, xs))) do (k, (p, x))
+            p*x^k
+        end
+
+        xs = 5 * eachcol(rand(2,30))
+        θtrue = [5., 10]
+        prior = MvNormal(θtrue, 0.5^2 * I)
+        n = length(xs)
+        corrnoise = MvNormal(zeros(n), I(n) + 1/5*hermitianpart(rand(n, n)))
+        noisemodel = CorrGaussianNoiseModel(corrnoise)
+
+        ysmeas = f.(xs, [θtrue]) .+ rand(corrnoise)
+
+        @testset for est in [MCMCEstimator(prior, f),
+                             LinearApproxEstimator(prior, f),
+                             LSQEstimator(prior, f),]
+            samples = @test_nowarn predictsamples(est, xs, ysmeas, noisemodel, 100)
+            @test mean(samples) ≈ θtrue rtol = 1e-1
+            pred = @test_nowarn predictdist(est, xs, ysmeas, noisemodel; nsamples=100)
+            @test mean(pred) ≈ θtrue rtol = 1e-1
+        end
+    end
+    @testset "multivariate measurements correlated gaussian noise" begin
+        f(x, p) = [(x + 1)^2 - sum(p);
+                    (x + 1)^3 + diff(p)[1]]
+
+        xs = rand(50)
+        θtrue = [1.0, 2.0]
+        prior = MvNormal(zeros(2), 1.0 * I)
+
+        n = length(xs)
+        # because observation are two dimensional
+        corrnoise = let n = 2*n
+            MvNormal(zeros(n), I(n) + 1/5*hermitianpart(rand(n, n)))
+        end
+        noisemodel = CorrGaussianNoiseModel(corrnoise)
+
+        ysmeas = reduce(vcat, f.(xs, [θtrue])) .+ rand(corrnoise)
+
+        @testset for est in [MCMCEstimator(prior, f),
+                             LinearApproxEstimator(prior, f),
+                             LSQEstimator(prior, f)]
+            samples = @test_nowarn predictsamples(est, xs, ysmeas, noisemodel, 100)
+            @test mean(samples) ≈ θtrue rtol = 1e-1
+            pred = @test_nowarn predictdist(est, xs, ysmeas, noisemodel; nsamples=100)
+            @test mean(pred) ≈ θtrue rtol = 1e-1
+        end
+    end
 end
