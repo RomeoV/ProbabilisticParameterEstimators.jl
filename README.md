@@ -34,7 +34,7 @@ end
 ```
 
 ## Problem Setup
-We assume parameters $\theta$ in $\mathbb{R}^m$, inputs $x$ in $\mathbb{R}^n$, and measurements $y$ in $\mathbb{R}^l$, linked by a observation function $$y = f(x, \theta) + \varepsilon$$ where $\varepsilon$ is sampled from a known noise distribution $p_{\bar{\varepsilon}}$.
+We assume parameters $\theta$ in $\mathbb{R}^m$, inputs $x$ in $\mathbb{R}^n$, and observations $y$ in $\mathbb{R}^l$, linked by a observation function $$y = f(x, \theta) + \varepsilon$$ where $\varepsilon$ is sampled from a known noise distribution $p_{\bar{\varepsilon}}$.
 Further assumptions of the noise models are discussed below.
 Notice also that $x$, $y$, and $theta$ may all be multidimensional, with different dimensions.
 
@@ -60,8 +60,21 @@ Therefore `predictsamples(::LSQEstimator, xs, ys, nsamples)` will solve `nsample
 
 ### LinearApproxEstimator
 The `LinearApproxEstimator` solves the optimization problem above just once, and then constructs a multivariate normal distribution centered at the solution.
-The covariance is constructed by computing the Jacobian of $f(x, \theta)$ and (roughly) multiplying it with the measurement uncertainty.
+The covariance is constructed by computing the Jacobian of $f(x, \theta)$ and (roughly) multiplying it with the observation uncertainty.
 See also [this wikipedia link](https://en.wikipedia.org/wiki/Non-linear_least_squares#Extension_by_weights).
 
 Therefore `predictdist(::LinearApproxEstimator, xs, ys, nsamples)` will solve one optimization problem and compute one Jacobian, yielding a `MvNormal` and making it very efficient.
 `predictsamples(::LinearApproxEstimator, xs, ys, nsamples)` will simply sample `nsample` times from this distribution, which is also very fast.
+
+
+## Noise Models
+We are currently considering three different possible noise models.
+Consider again how we may have an observation $(x_i, y_i)$, and each $y_i$ may be multi-dimensional.
+The first question is: Is noise correlated /across/ multiple observations $y_i$ and $y_j$, $i \neq j$?
+
+If there is **no** correlation between observations, we can use the noise models:
+- `UncorrGaussianNoiseModel`: A vector of (possibly multivariate) Gaussian noise distributions, one for each observation.
+- `UncorrProductNoiseModel` : A vector of univariate noise distributions of any kind. Can not model correlations within a single observation.
+
+If there **is** correlation between observations, we can provide a single multivariate Gaussian noise model.
+ - `CorrGaussianNoiseModel`: A single multivariate normal distribution, with a noise component for each component in each observation. Multivariate observations are therefore flattened to correspond to the noise model.
