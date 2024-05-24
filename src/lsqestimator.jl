@@ -1,12 +1,7 @@
-@kwdef struct LSQEstimator{PT, FT, ST, SAT} <: EstimationMethod
-    paramprior::PT
-    f::FT
+@kwdef struct LSQEstimator{ST, SAT} <: EstimationMethod
     solvealg::ST = TrustRegion
     solveargs::SAT = (; reltol=1e-3)
 end
-LSQEstimator(paramprior, f) = LSQEstimator(paramprior=paramprior, f=f)
-paramprior(est::LSQEstimator) = est.paramprior
-mappingfn(est::LSQEstimator) = est.f
 solvealg(est::LSQEstimator) = est.solvealg
 solveargs(est::LSQEstimator) = est.solveargs
 
@@ -31,11 +26,11 @@ end
 #     return dr
 # end
 
-function predictsamples(est::LSQEstimator, xs, ysmeas, noisemodel, nsamples)
+function predictsamples(est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable, noisemodel::AbstractNoiseModel, nsamples)
     ysmeas_ = maybeflatten(ysmeas)
-    ps = (; xs, ys=ysmeas_, noisemodel, f = mappingfn(est))
+    ps = (; xs, ys=ysmeas_, noisemodel, f)
     # solve once for init
-    θ₀ = rand(paramprior(est))
+    θ₀ = rand(paramprior)
     # in-place doesn't work for our case because size(dr) != size(θ)
     prob = NonlinearLeastSquaresProblem{false}(g, θ₀, ps)
     alg = solvealg(est)(; autodiff = AutoForwardDiff(; chunksize = 1))
@@ -58,8 +53,8 @@ function predictsamples(est::LSQEstimator, xs, ysmeas, noisemodel, nsamples)
     θs
 end
 
-function predictdist(est::LSQEstimator, xs, ys_meas, noisemodel;
+function predictdist(est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable, noisemodel::AbstractNoiseModel;
                      nsamples=100)
-    samples = predictsamples(est, xs, ys_meas, noisemodel, nsamples)
+    samples = predictsamples(est, f, xs, ysmeas, paramprior, noisemodel, nsamples)
     fit(MvNormal, stack(samples; dims=2))
 end

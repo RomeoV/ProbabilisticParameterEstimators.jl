@@ -28,12 +28,12 @@ end
         noisemodel = UncorrGaussianNoiseModel(noises)
         ysmeas = f.(xs, [θtrue]) .+ rand.(noises)
 
-        @testset for est in [MCMCEstimator(prior, f),
-                             LinearApproxEstimator(prior, f),
-                             LSQEstimator(prior, f),]
-            samples = @test_nowarn predictsamples(est, xs, ysmeas, noisemodel, 100)
+        @testset for est in [MCMCEstimator(),
+                             LinearApproxEstimator(),
+                             LSQEstimator(),]
+            samples = @test_nowarn predictsamples(est, f, xs, ysmeas, prior, noisemodel, 100)
             @test mean(samples) ≈ θtrue rtol = 1e-1
-            pred = @test_nowarn predictdist(est, xs, ysmeas, noisemodel; nsamples=100)
+            pred = @test_nowarn predictdist(est, f, xs, ysmeas, prior, noisemodel; nsamples=100)
             @test mean(pred) ≈ θtrue rtol = 1e-1
         end
     end
@@ -49,12 +49,12 @@ end
         noisemodel = UncorrGaussianNoiseModel(noises)
         ysmeas = f.(xs, [θtrue]) .+ rand.(noises)
 
-        @testset for est in [MCMCEstimator(prior, f),
-                             LinearApproxEstimator(prior, f),
-                             LSQEstimator(prior, f)]
-            samples = @test_nowarn predictsamples(est, xs, ysmeas, noisemodel, 100)
+        @testset for est in [MCMCEstimator(),
+                             LinearApproxEstimator(),
+                             LSQEstimator()]
+            samples = @test_nowarn predictsamples(est, f, xs, ysmeas, prior, noisemodel, 100)
             @test mean(samples) ≈ θtrue rtol = 1e-1
-            pred = @test_nowarn predictdist(est, xs, ysmeas, noisemodel; nsamples=100)
+            pred = @test_nowarn predictdist(est, f, xs, ysmeas, prior, noisemodel; nsamples=100)
             @test mean(pred) ≈ θtrue rtol = 1e-1
         end
     end
@@ -72,12 +72,12 @@ end
 
         ysmeas = f.(xs, [θtrue]) .+ rand(corrnoise)
 
-        @testset for est in [MCMCEstimator(prior, f),
-                             LinearApproxEstimator(prior, f),
-                             LSQEstimator(prior, f),]
-            samples = @test_nowarn predictsamples(est, xs, ysmeas, noisemodel, 100)
+        @testset for est in [MCMCEstimator(),
+                             LinearApproxEstimator(),
+                             LSQEstimator(),]
+            samples = @test_nowarn predictsamples(est, f, xs, ysmeas, prior, noisemodel, 100)
             @test mean(samples) ≈ θtrue rtol = 1e-1
-            pred = @test_nowarn predictdist(est, xs, ysmeas, noisemodel; nsamples=100)
+            pred = @test_nowarn predictdist(est, f, xs, ysmeas, prior, noisemodel; nsamples=100)
             @test mean(pred) ≈ θtrue rtol = 1e-1
         end
     end
@@ -101,12 +101,12 @@ end
 
         ysmeas = reduce(vcat, f.(xs, [θtrue])) .+ rand(corrnoise)
 
-        @testset for est in [MCMCEstimator(prior, f),
-                             LinearApproxEstimator(prior, f),
-                             LSQEstimator(prior, f)]
-            samples = @test_nowarn predictsamples(est, xs, ysmeas, noisemodel, 100)
+        @testset for est in [MCMCEstimator(),
+                             LinearApproxEstimator(),
+                             LSQEstimator()]
+            samples = @test_nowarn predictsamples(est, f, xs, ysmeas, prior, noisemodel, 100)
             @test mean(samples) ≈ θtrue rtol = 1e-1
-            pred = @test_nowarn predictdist(est, xs, ysmeas, noisemodel; nsamples=100)
+            pred = @test_nowarn predictdist(est, f, xs, ysmeas, prior, noisemodel; nsamples=100)
             @test mean(pred) ≈ θtrue rtol = 1e-1
         end
     end
@@ -124,12 +124,12 @@ end
 
         ysmeas = f.(xs, [θtrue]) .+ rand.(productnoise)
 
-        @testset for est in [MCMCEstimator(prior, f),
-                             LinearApproxEstimator(prior, f),
-                             LSQEstimator(prior, f),]
-            samples = @test_nowarn predictsamples(est, xs, ysmeas, noisemodel, 100)
+        @testset for est in [MCMCEstimator(),
+                             LinearApproxEstimator(),
+                             LSQEstimator(),]
+            samples = @test_nowarn predictsamples(est, f, xs, ysmeas, prior, noisemodel, 100)
             @test mean(samples) ≈ θtrue rtol = 1e-1
-            pred = @test_nowarn predictdist(est, xs, ysmeas, noisemodel; nsamples=100)
+            pred = @test_nowarn predictdist(est, f, xs, ysmeas, prior, noisemodel; nsamples=100)
             @test mean(pred) ≈ θtrue rtol = 1e-1
         end
     end

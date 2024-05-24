@@ -1,7 +1,7 @@
 module ProbabilisticParameterEstimators
 import BlockDiagonals: BlockDiagonal
 import LinearAlgebra: Diagonal, lu, diag, I
-import Distributions: Normal, MvNormal, var, cov, fit, Distribution, Univariate, Continuous, product_distribution
+import Distributions: Normal, MvNormal, var, cov, fit, Distribution, Univariate, Continuous, product_distribution, Sampleable
 import Turing: @model, sample, NUTS
 import Logging: with_logger, ConsoleLogger, Warn
 import Accessors: @set
