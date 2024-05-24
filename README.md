@@ -14,7 +14,7 @@ f(x, p) = [(x + 1)^2 - sum(p);
 
 # true parameter (to be estimated) and a prior belief
 θtrue = [1.0, 2.0]
-prior = MvNormal(zeros(2), 4.0 * I)
+paramprior = MvNormal(zeros(2), 4.0 * I)
 
 # observation noise
 obsnoises = [rand()/10 * I(2) * MvNormal(zeros(2), I) for _ in eachindex(xs)]
@@ -26,9 +26,9 @@ ysmeas = f.(xs, [θtrue]) .+ rand.(noises)
 
 # find a probabilistic description of θ either as samples or as a distribution
 # currently we provide three methods
-for est in [MCMCEstimator(prior, f),
-            LinearApproxEstimator(prior, f),
-            LSQEstimator(prior, f)]
+for est in [MCMCEstimator(paramprior, f),
+            LinearApproxEstimator(paramprior, f),
+            LSQEstimator(paramprior, f)]
     # either
     samples =  predictsamples(est, xs, ysmeas, noisemodel, 100)
     # or
@@ -57,6 +57,7 @@ The `LSQEstimator` works by sampling noise $\varepsilon^{(k)}$ from the noise mo
 $$\theta = \arg \min_\theta \sum_i ((y_i - \varepsilon_i^{(k)}) - f(x_i, \theta))^2 \cdot w_i$$
 for uncorrelated noise, where the weights $w_i$ are chosen as the inverse variance.
 For correlated noise, the weight results from the whole covariance matrix.
+The `paramprior` is used to sample initial guesses for $\theta$.
 
 Therefore `predictsamples(::LSQEstimator, xs, ys, nsamples)` will solve `nsamples` optimization problems and return a sample each.
 `predictdist(::LSQEstimator, xs, ys, nsamples)` will do the same, and then fit a `MvNormal` distribution.
@@ -65,6 +66,7 @@ Therefore `predictsamples(::LSQEstimator, xs, ys, nsamples)` will solve `nsample
 The `LinearApproxEstimator` solves the optimization problem above just once, and then constructs a multivariate normal distribution centered at the solution.
 The covariance is constructed by computing the Jacobian of $f(x, \theta)$ and (roughly) multiplying it with the observation uncertainty.
 See also [this wikipedia link](https://en.wikipedia.org/wiki/Non-linear_least_squares#Extension_by_weights).
+The `paramprior` is used to sample initial guesses for $\theta$.
 
 Therefore `predictdist(::LinearApproxEstimator, xs, ys, nsamples)` will solve one optimization problem and compute one Jacobian, yielding a `MvNormal` and making it very efficient.
 `predictsamples(::LinearApproxEstimator, xs, ys, nsamples)` will simply sample `nsample` times from this distribution, which is also very fast.
@@ -81,3 +83,32 @@ If there is **no** correlation between observations, we can use the noise models
 
 If there **is** correlation between observations, we can provide a single multivariate Gaussian noise model.
  - `CorrGaussianNoiseModel`: A single multivariate normal distribution, with a noise component for each component in each observation. Multivariate observations are therefore flattened to correspond to the noise model.
+
+Here are some examples:
+
+``` julia
+## UncorrGaussianNoiseModel
+xs = rand(5)
+# one (uni- or multivariate) normal distribution per observation
+noises = [MvNormal(zeros(2), I) for _ in eachindex(xs)]
+noisemodel = UncorrGaussianNoiseModel(noises)
+θtrue = [1.0, 2.0]
+ysmeas = f.(xs, [θtrue]) .+ rand.(noises)
+
+## UncorrProductNoiseModel
+xs = eachcol(rand(2,30))
+# one univariate distribution per observation
+productnoise = [truncated(0.1*Normal(), 0, Inf) for _ in 1:length(xs)]
+noisemodel = UncorrProductNoiseModel(productnoise)
+θtrue = [5., 10]
+ysmeas = f.(xs, [θtrue]) .+ rand.(productnoise)
+
+## CorrGaussianNoiseModel
+xs = 5 * eachcol(rand(2,30))
+n = length(xs)
+# one large Gaussian relating all observations
+corrnoise = MvNormal(zeros(n), I(n) + 1/5*hermitianpart(rand(n, n)))
+noisemodel = CorrGaussianNoiseModel(corrnoise)
+θtrue = [5., 10]
+ysmeas = f.(xs, [θtrue]) .+ rand(corrnoise)
+```
