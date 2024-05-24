@@ -92,8 +92,11 @@ end
         n = length(xs)
         # because observation are two dimensional
         corrnoise = let n = 2*n
-            1/10 * I(n) * MvNormal(zeros(n), I(n) + 1/5*hermitianpart(rand(n, n)))
+            Σ = zeros(n, n)
+            while !isposdef(Σ); Σ .= I(n) + 1/5*hermitianpart(rand(n, n)); end
+            1/10 * I(n) * MvNormal(zeros(n), Σ)
         end
+
         noisemodel = CorrGaussianNoiseModel(corrnoise)
 
         ysmeas = reduce(vcat, f.(xs, [θtrue])) .+ rand(corrnoise)
