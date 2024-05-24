@@ -19,7 +19,7 @@ for est_t in [MCMCEstimator, LSQEstimator, LinearApproxEstimator]
                 "medium" => 20,
                 "large"=>100)
         for size in ["small", "medium"] #, "large"]
-            suite[size] = @benchmarkable predictsamples(est, xs, ysmeas, noisemodel, 500) setup = begin
+            suite[size] = @benchmarkable predictsamples(est, f, xs, ysmeas, prior, noisemodel, 500) setup = begin
                 xs = rand($nsamplesdict[$size])
                 n = length(xs)
                 corrnoise = let n = 2*n
@@ -28,7 +28,9 @@ for est_t in [MCMCEstimator, LSQEstimator, LinearApproxEstimator]
                 noisemodel = CorrGaussianNoiseModel(corrnoise)
                 ysmeas = maybeflatten($f.(xs, [$θtrue])) .+ rand(corrnoise)
 
-                est = $est_t($prior, $f)
+                est = $est_t()
+                f = $f
+                prior = $prior
             end
         end
         suite
