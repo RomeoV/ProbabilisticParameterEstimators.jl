@@ -11,5 +11,18 @@ ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
 NonlinearSolve = "8913a72c-1f9b-4ce2-8d82-65094dcecaec"
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 Turing = "fce5fe82-541a-59a6-adf8-730c64b5f9a0"
+
+[compat]
+Accessors = "0.1"
+BlockDiagonals = "0.1"
+Distributions = "0.25"
+ForwardDiff = "0.10"
+NonlinearSolve = "3"
+Turing = "0.32"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
