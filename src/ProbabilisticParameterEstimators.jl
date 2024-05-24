@@ -5,10 +5,11 @@ import Distributions: Normal, MvNormal, var, cov, fit, Distribution, Univariate,
 import Turing: @model, sample, NUTS
 import Logging: with_logger, ConsoleLogger, Warn
 import Accessors: @set
-import NonlinearSolve: NewtonRaphson, solve, NonlinearLeastSquaresProblem, remake, pickchunksize, AutoForwardDiff, FastShortcutNLLSPolyalg
+import NonlinearSolve: NewtonRaphson, solve, NonlinearLeastSquaresProblem, remake, pickchunksize, AutoForwardDiff, FastShortcutNLLSPolyalg, TrustRegion
 import NonlinearSolve.ReturnCode
 import NonlinearSolve
 import ForwardDiff.jacobian
+import ForwardDiff
 
 import Base: show
 
@@ -57,6 +58,10 @@ abstract type EstimationMethod end
 function predictsamples(::EstimationMethod, xs, ys, noise_model, nsamples) end
 function predictdistr(::EstimationMethod, xs, ys, noise_model) end
 Base.show(io::Base.IO, est::EstimationMethod) = print(io, typeof(est))
+
+
+maybeflatten(elems::AbstractVector{<:AbstractVector{T}}) where {T<:Real} = reduce(vcat, elems; init=T[])
+maybeflatten(elems::AbstractVector{T}) where {T<:Real} = elems
 
 include("mcmcestimator.jl")
 include("lsqestimator.jl")

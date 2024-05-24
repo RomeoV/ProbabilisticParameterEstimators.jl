@@ -9,6 +9,7 @@ mappingfn(est::MCMCEstimator) = est.f
     θ ~ paramprior(estimator)
     f = mappingfn(estimator)
     ys = reduce(vcat, f.(xs, [θ]))
+    # TODO: This shouldn't be a MvNormal
     ysmeas ~ MvNormal(ys, covmatrix(noisemodel))
     return
 end
