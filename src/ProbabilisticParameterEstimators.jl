@@ -18,52 +18,18 @@ export MCMCEstimator, LSQEstimator, LinearApproxEstimator
 export predictsamples, predictdist
 export mvnoisedistribution, covmatrix
 
-abstract type AbstractNoiseModel end
-abstract type UncorrNoiseModel <: AbstractNoiseModel end
-struct UncorrGaussianNoiseModel{DT} <: UncorrNoiseModel where {DT<:Union{<:MvNormal,<:Normal}}
-    noisedistributions::Vector{DT}
-end
-struct UncorrProductNoiseModel{DT} <: UncorrNoiseModel where {DT<:Distribution{Univariate, Continuous}}
-    noisedistributions::Vector{DT}
-end
-struct CorrGaussianNoiseModel{DT} <: AbstractNoiseModel where {DT<:MvNormal}
-    noisedistribution::DT
-end
 
-function covmatrix(::AbstractNoiseModel) end
-function mvnoisedistribution(::AbstractNoiseModel) end
+"""
+    maybeflatten(elems::AbstractVector{<:AbstractVector{T}}) where {T<:Real}
+    maybeflatten(elems::AbstractVector{T}) where {T<:Real}
 
-covmatrix(model::UncorrGaussianNoiseModel{<:Normal}) =
-    Diagonal(var.(model.noisedistributions))
-covmatrix(model::UncorrGaussianNoiseModel{<:MvNormal}) =
-    BlockDiagonal(cov.(model.noisedistributions))
-covmatrix(model::CorrGaussianNoiseModel) =
-    cov(model.noisedistribution)
-covmatrix(model::UncorrProductNoiseModel) =
-    cov(product_distribution(model.noisedistributions))
-
-mvnoisedistribution(model::UncorrGaussianNoiseModel{<:Normal}) =
-    MvNormal(zeros(length(model.noisedistributions)),
-             covmatrix(model))
-mvnoisedistribution(model::UncorrGaussianNoiseModel{<:MvNormal}) =
-    MvNormal(zeros(sum(length.(model.noisedistributions))),
-             covmatrix(model))
-mvnoisedistribution(model::CorrGaussianNoiseModel) =
-    model.noisedistribution
-mvnoisedistribution(model::UncorrProductNoiseModel) =
-    product_distribution(model.noisedistributions)
-
-
-abstract type EstimationMethod end
-function predictsamples(::EstimationMethod, xs, ys, noise_model, nsamples) end
-function predictdistr(::EstimationMethod, xs, ys, noise_model) end
-Base.show(io::Base.IO, est::EstimationMethod) = print(io, typeof(est))
-
-
+Flatten a vector of vectors into a single vector if the elements are vectors themselves.
+Otherwise, just return the input vector unchanged.
+"""
 maybeflatten(elems::AbstractVector{<:AbstractVector{T}}) where {T<:Real} = reduce(vcat, elems; init=T[])
 maybeflatten(elems::AbstractVector{T}) where {T<:Real} = elems
 
-include("mcmcestimator.jl")
-include("lsqestimator.jl")
-include("linearapproxestimator.jl")
+include("noisemodels.jl")
+include("estimators.jl")
+
 end # module ProbabilisticParameterEstimators
