@@ -1,5 +1,8 @@
 # ProbabilisticParameterEstimators.jl
 
+[![Build Status](https://github.com/JuliaCI/BenchmarkTools.jl/workflows/CI/badge.svg)](https://github.com/JuliaCI/BenchmarkTools.jl/actions/workflows/CI.yml?query=branch%3Amaster)
+[![codecov](https://codecov.io/gh/RomeoV/ProbabilisticParameterEstimators.jl/graph/badge.svg?token=5J82UXPL8I)](https://codecov.io/gh/RomeoV/ProbabilisticParameterEstimators.jl)
+
 Implementation of different parameter estimators that take in measures under uncertainty and produce a probability distribution over the parameters.
 
 ## High Level Example
