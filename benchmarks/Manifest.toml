@@ -1301,10 +1301,10 @@ deps = ["Unicode"]
 uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 
 [[deps.ProbabilisticParameterEstimators]]
-deps = ["Accessors", "BlockDiagonals", "Distributions", "ForwardDiff", "LinearAlgebra", "Logging", "NonlinearSolve", "Test", "Turing"]
+deps = ["Accessors", "BlockDiagonals", "Distributions", "ForwardDiff", "LinearAlgebra", "Logging", "NonlinearSolve", "Turing"]
 path = ".."
 uuid = "0098cf3f-3e1e-4f11-b01c-dd9dec1b3374"
-version = "0.5.1"
+version = "0.6.1"
 
 [[deps.Profile]]
 deps = ["Printf"]
