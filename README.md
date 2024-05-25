@@ -47,7 +47,7 @@ Given that we have uncertainty in the observations, we are interested in constru
 We implement three estimators for this task, which map to either samples or a distribution via `predictsamples(est, f, xs, ys, paramprior, noisemodel, nsamples)` and `predictdist(est, f, xs, ys, paramprior, noisemodel)`, respectively.
 The conversion between samples and a distribution can be done automatically via sampling or fitting a multivariate normal distribution.
 
-![Estimator Overview](figs/distribution_graph/distribution_graph.png)
+![Estimator Overview](docs/src/assets/distribution_graph/distribution_graph.png)
 
 ### MCMCEstimator
 The `MCMCEstimator` simply phrases the problem as a Monte-Carlo Markov-Chain inference problem, which we solve using the `NUTS` algorithm provided by `Turing.jl`.
