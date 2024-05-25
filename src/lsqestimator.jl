@@ -1,5 +1,13 @@
-@kwdef struct LSQEstimator{ST, SAT} <: EstimationMethod
+"""
+    $(TYPEDEF)
+
+# Fields
+$(TYPEDFIELDS)
+"""
+@kwdef struct LSQEstimator{ST<:Function, SAT<:NamedTuple} <: EstimationMethod
+    "Function that creates solver algorithm; will be called with autodiff method fixed."
     solvealg::ST = TrustRegion
+    "kwargs passed to `NonlinearSolve.solve`. Defaults to `(; reltol=1e-3)`."
     solveargs::SAT = (; reltol=1e-3)
 end
 solvealg(est::LSQEstimator) = est.solvealg

@@ -2,6 +2,7 @@ module ProbabilisticParameterEstimators
 import BlockDiagonals: BlockDiagonal
 import LinearAlgebra: Diagonal, lu, diag, I
 import Distributions: Normal, MvNormal, var, cov, fit, Distribution, Univariate, Continuous, product_distribution, Sampleable
+import Turing
 import Turing: @model, sample, NUTS
 import Logging: with_logger, ConsoleLogger, Warn
 import Accessors: @set
@@ -10,6 +11,7 @@ import NonlinearSolve.ReturnCode
 import NonlinearSolve
 import ForwardDiff.jacobian
 import ForwardDiff
+using DocStringExtensions
 
 import Base: show
 

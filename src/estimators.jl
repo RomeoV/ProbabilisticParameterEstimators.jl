@@ -1,3 +1,8 @@
+"""
+    abstract type EstimationMethod
+
+Abstract base type for the different estimators.
+"""
 abstract type EstimationMethod end
 Base.show(io::Base.IO, est::EstimationMethod) = print(io, typeof(est))
 

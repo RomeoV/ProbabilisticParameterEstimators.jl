@@ -1,3 +1,12 @@
+
+"""
+    NoiseModel
+
+Abstract base type for noise models.
+
+# Fields:
+$(TYPEDFIELDS)
+"""
 abstract type NoiseModel end
 
 "Noise model with no correlation between observations."
@@ -7,6 +16,9 @@ abstract type UncorrNoiseModel <: NoiseModel end
     UncorrGaussianNoiseModel{DT}
 
 Model Gaussian noise *within* observations, but without correlation between observations.
+
+# Fields:
+$(TYPEDFIELDS)
 """
 struct UncorrGaussianNoiseModel{DT} <: UncorrNoiseModel where {DT<:Union{<:MvNormal,<:Normal}}
     "A vector of (possibly multivariate) Gaussian noise distributions with type `DT`, one for each observation."
@@ -17,6 +29,9 @@ end
     UncorrProductNoiseModel{DT}
 
 Model arbitrary noise for univariate observations, without correlation between observations.
+
+# Fields:
+$(TYPEDFIELDS)
 """
 struct UncorrProductNoiseModel{DT} <: UncorrNoiseModel where {DT<:Distribution{Univariate, Continuous}}
     "A vector of univariate noise distributions of any kind with type `DT`. Can not model correlations within a single observation."

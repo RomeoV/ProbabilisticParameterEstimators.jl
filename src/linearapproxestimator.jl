@@ -1,5 +1,13 @@
-@kwdef struct LinearApproxEstimator{ST, SAT} <: EstimationMethod
+"""
+    $(TYPEDEF)
+
+# Fields
+$(TYPEDFIELDS)
+"""
+@kwdef struct LinearApproxEstimator{ST<:Function, SAT<:NamedTuple} <: EstimationMethod
+    "Function that creates solver algorithm; will be called with autodiff method fixed."
     solvealg::ST = TrustRegion
+    "kwargs passed to `NonlinearSolve.solve`. Defaults to `(; )`."
     solveargs::SAT = (; reltol=1e-3)
 end
 solvealg(est::LinearApproxEstimator) = est.solvealg
