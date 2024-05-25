@@ -1,7 +1,7 @@
-abstract type AbstractNoiseModel end
+abstract type NoiseModel end
 
 "Noise model with no correlation between observations."
-abstract type UncorrNoiseModel <: AbstractNoiseModel end
+abstract type UncorrNoiseModel <: NoiseModel end
 
 """
     UncorrGaussianNoiseModel{DT}
@@ -28,7 +28,7 @@ end
 
 Model noise possibly correlated between observations with a single large MvNormal.
 """
-struct CorrGaussianNoiseModel{DT} <: AbstractNoiseModel where {DT<:MvNormal}
+struct CorrGaussianNoiseModel{DT} <: NoiseModel where {DT<:MvNormal}
     "A single multivariate normal distribution with type `DT`, with a noise component for each component in each observation."
     noisedistribution::DT
 end
@@ -40,7 +40,7 @@ Construct a single N by N covariance matrix for flat vector of observations.
 
 May be a special matrix type such as `Diagonal` or `BlockDiagonal`, depending on the noise model.
 """
-function covmatrix(::AbstractNoiseModel) end
+function covmatrix(::NoiseModel) end
 covmatrix(model::UncorrGaussianNoiseModel{<:Normal}) =
     Diagonal(var.(model.noisedistributions))
 covmatrix(model::UncorrGaussianNoiseModel{<:MvNormal}) =
@@ -55,7 +55,7 @@ covmatrix(model::UncorrProductNoiseModel) =
 
 Construct a samplable noise distribution (e.g. `Product` or `MvNormal`).
 """
-function mvnoisedistribution(::AbstractNoiseModel) end
+function mvnoisedistribution(::NoiseModel) end
 mvnoisedistribution(model::UncorrGaussianNoiseModel{<:Normal}) =
     MvNormal(zeros(length(model.noisedistributions)),
              covmatrix(model))

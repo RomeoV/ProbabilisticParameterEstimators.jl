@@ -26,7 +26,7 @@ end
 #     return dr
 # end
 
-function predictsamples(est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable, noisemodel::AbstractNoiseModel, nsamples)
+function predictsamples(est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable, noisemodel::NoiseModel, nsamples)
     ysmeas_ = maybeflatten(ysmeas)
     ps = (; xs, ys=ysmeas_, noisemodel, f)
     # solve once for init
@@ -53,7 +53,7 @@ function predictsamples(est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable
     θs
 end
 
-function predictdist(est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable, noisemodel::AbstractNoiseModel;
+function predictdist(est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable, noisemodel::NoiseModel;
                      nsamples=100)
     samples = predictsamples(est, f, xs, ysmeas, paramprior, noisemodel, nsamples)
     fit(MvNormal, stack(samples; dims=2))

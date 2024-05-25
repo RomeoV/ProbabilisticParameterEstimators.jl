@@ -5,7 +5,7 @@ end
 solvealg(est::LinearApproxEstimator) = est.solvealg
 solveargs(est::LinearApproxEstimator) = est.solveargs
 
-function predictdist(est::LinearApproxEstimator, f, xs, ysmeas, paramprior::Sampleable, noisemodel::AbstractNoiseModel;
+function predictdist(est::LinearApproxEstimator, f, xs, ysmeas, paramprior::Sampleable, noisemodel::NoiseModel;
                      nsamples=nothing)
     # nsamples is provided for compatibility only
     ysmeas_ = maybeflatten(ysmeas)
@@ -33,7 +33,7 @@ function predictdist(est::LinearApproxEstimator, f, xs, ysmeas, paramprior::Samp
     θmean + A * (MvNormal(ysmeas_, Σy) - fpred_)
 end
 
-function predictsamples(est::LinearApproxEstimator, f, xs, ysmeas, paramprior::Sampleable, noisemodel::AbstractNoiseModel, nsamples)
+function predictsamples(est::LinearApproxEstimator, f, xs, ysmeas, paramprior::Sampleable, noisemodel::NoiseModel, nsamples)
     dist = predictdist(est, f, xs, ysmeas, paramprior, noisemodel)
     eachcol(rand(dist, nsamples))
 end
