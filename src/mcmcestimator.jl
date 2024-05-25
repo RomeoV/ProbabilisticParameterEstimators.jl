@@ -1,9 +1,11 @@
-@kwdef struct MCMCEstimator{ST, SAT} <: EstimationMethod
-    solvealg::ST = NUTS
-    solveargs::SAT = (; )
+@kwdef struct MCMCEstimator{ST<:Turing.InferenceAlgorithm, SAT<:NamedTuple} <: EstimationMethod
+    "Inference algorithm type for MCMC sampling. Defaults to `NUTS`."
+    samplealg::ST = NUTS
+    "kwargs passed to `Turing.sample`. Defaults to `(; )`."
+    sampleargs::SAT = (; )
 end
-solvealg(est::MCMCEstimator) = est.solvealg
-solveargs(est::MCMCEstimator) = est.solveargs
+solvealg(est::MCMCEstimator) = est.samplealg
+solveargs(est::MCMCEstimator) = est.sampleargs
 
 @model function bayesianmodel(estimator::MCMCEstimator, f, xs, ysmeas, paramprior::Sampleable, noisemodel::NoiseModel)
     θ ~ paramprior
