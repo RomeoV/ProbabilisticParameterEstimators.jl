@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1716625582570,
+  "lastUpdate": 1716626055490,
   "repoUrl": "https://github.com/RomeoV/ProbabilisticParameterEstimators.jl",
   "entries": {
     "Julia benchmark result": [
@@ -1018,6 +1018,66 @@ window.BENCHMARK_DATA = {
           {
             "name": "LinearApproxEstimator/small",
             "value": 255056,
+            "unit": "ns",
+            "extra": "gctime=0\nmemory=248160\nallocs=1744\nparams={\"gctrial\":true,\"time_tolerance\":0.05,\"evals_set\":false,\"samples\":10000,\"evals\":1,\"gcsample\":false,\"seconds\":5,\"overhead\":0,\"memory_tolerance\":0.01}"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "romeov@stanford.edu",
+            "name": "Romeo Valentin",
+            "username": "RomeoV"
+          },
+          "committer": {
+            "email": "romeov@stanford.edu",
+            "name": "Romeo Valentin",
+            "username": "RomeoV"
+          },
+          "distinct": true,
+          "id": "733799a67182f98336c212664c475f86661f217c",
+          "message": "Try to remove original cache from documenter workflow.",
+          "timestamp": "2024-05-25T01:31:47-07:00",
+          "tree_id": "f8c21ef230251cb3bfaa5c20d50ca8a1decd0439",
+          "url": "https://github.com/RomeoV/ProbabilisticParameterEstimators.jl/commit/733799a67182f98336c212664c475f86661f217c"
+        },
+        "date": 1716626055116,
+        "tool": "julia",
+        "benches": [
+          {
+            "name": "MCMCEstimator/medium",
+            "value": 128152293.5,
+            "unit": "ns",
+            "extra": "gctime=8928912.5\nmemory=423136096\nallocs=600951\nparams={\"gctrial\":true,\"time_tolerance\":0.05,\"evals_set\":false,\"samples\":10000,\"evals\":1,\"gcsample\":false,\"seconds\":5,\"overhead\":0,\"memory_tolerance\":0.01}"
+          },
+          {
+            "name": "MCMCEstimator/small",
+            "value": 58733204,
+            "unit": "ns",
+            "extra": "gctime=1972646\nmemory=60146320\nallocs=417265\nparams={\"gctrial\":true,\"time_tolerance\":0.05,\"evals_set\":false,\"samples\":10000,\"evals\":1,\"gcsample\":false,\"seconds\":5,\"overhead\":0,\"memory_tolerance\":0.01}"
+          },
+          {
+            "name": "LSQEstimator/medium",
+            "value": 400031099,
+            "unit": "ns",
+            "extra": "gctime=16684598\nmemory=1001408304\nallocs=1650074\nparams={\"gctrial\":true,\"time_tolerance\":0.05,\"evals_set\":false,\"samples\":10000,\"evals\":1,\"gcsample\":false,\"seconds\":5,\"overhead\":0,\"memory_tolerance\":0.01}"
+          },
+          {
+            "name": "LSQEstimator/small",
+            "value": 94218543.5,
+            "unit": "ns",
+            "extra": "gctime=3431311\nmemory=108972368\nallocs=738138\nparams={\"gctrial\":true,\"time_tolerance\":0.05,\"evals_set\":false,\"samples\":10000,\"evals\":1,\"gcsample\":false,\"seconds\":5,\"overhead\":0,\"memory_tolerance\":0.01}"
+          },
+          {
+            "name": "LinearApproxEstimator/medium",
+            "value": 925459,
+            "unit": "ns",
+            "extra": "gctime=0\nmemory=2087904\nallocs=3682\nparams={\"gctrial\":true,\"time_tolerance\":0.05,\"evals_set\":false,\"samples\":10000,\"evals\":1,\"gcsample\":false,\"seconds\":5,\"overhead\":0,\"memory_tolerance\":0.01}"
+          },
+          {
+            "name": "LinearApproxEstimator/small",
+            "value": 251580,
             "unit": "ns",
             "extra": "gctime=0\nmemory=248160\nallocs=1744\nparams={\"gctrial\":true,\"time_tolerance\":0.05,\"evals_set\":false,\"samples\":10000,\"evals\":1,\"gcsample\":false,\"seconds\":5,\"overhead\":0,\"memory_tolerance\":0.01}"
           }
