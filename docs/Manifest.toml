@@ -1367,7 +1367,7 @@ uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 deps = ["Accessors", "BlockDiagonals", "Distributions", "DocStringExtensions", "ForwardDiff", "LinearAlgebra", "Logging", "NonlinearSolve", "Turing"]
 path = ".."
 uuid = "0098cf3f-3e1e-4f11-b01c-dd9dec1b3374"
-version = "0.7.0"
+version = "0.7.1"
 
 [[deps.ProgressLogging]]
 deps = ["Logging", "SHA", "UUIDs"]
