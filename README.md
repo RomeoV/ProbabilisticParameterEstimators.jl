@@ -1,5 +1,6 @@
 # ProbabilisticParameterEstimators.jl
 
+[![Docs](https://img.shields.io/badge/docs-dev-blue.svg)](https://romeov.github.io/ProbabilisticParameterEstimators.jl/dev/)
 [![Build Status](https://github.com/JuliaCI/BenchmarkTools.jl/workflows/CI/badge.svg)](https://github.com/JuliaCI/BenchmarkTools.jl/actions/workflows/CI.yml?query=branch%3Amaster)
 [![codecov](https://codecov.io/gh/RomeoV/ProbabilisticParameterEstimators.jl/graph/badge.svg?token=5J82UXPL8I)](https://codecov.io/gh/RomeoV/ProbabilisticParameterEstimators.jl)
 [![Static Badge](https://img.shields.io/badge/Benchmarks-master-yellow?link=https%3A%2F%2Fromeov.github.io%2FProbabilisticParameterEstimators.jl%2Fdev%2Fbench%2F)](https://romeov.github.io/ProbabilisticParameterEstimators.jl/dev/bench/)
