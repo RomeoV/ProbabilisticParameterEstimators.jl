@@ -1,5 +1,18 @@
-"""
+@doc raw"""
     $(TYPEDEF)
+
+The `LSQEstimator` works by sampling noise ``\varepsilon^{(k)}`` from the noise model
+and repeatedly solving a least-squares parameter estimation problem for modified observations
+``y - \varepsilon^{(k)}``, i.e.
+
+``\theta = \arg \min_\theta \sum_i ((y_i - \varepsilon_i^{(k)}) - f(x_i, \theta))^2 \cdot w_i``
+
+for uncorrelated noise, where the weights ``w_i`` are chosen as the inverse variance.
+For correlated noise, the weight results from the whole covariance matrix.
+The `paramprior` is used to sample initial guesses for ``\theta``.
+
+Therefore [`predictsamples`](@ref) will solve `nsamples` optimization problems and return a sample each.
+[`predictdist`](@ref) will do the same, and then fit a `MvNormal` distribution.
 
 # Fields
 $(TYPEDFIELDS)

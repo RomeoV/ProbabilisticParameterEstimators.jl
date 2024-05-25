@@ -1,5 +1,14 @@
-"""
+@doc raw"""
     $(TYPEDEF)
+
+The `LinearApproxEstimator` solves a similar optimization problem as [`LSQEstimator`](@ref), but solves it just once,
+and then constructs a multivariate normal distribution centered at the solution.
+The covariance is constructed by computing the Jacobian of ``f(x, \theta)`` and (roughly) multiplying it with the observation uncertainty.
+See also [this wikipedia link](https://en.wikipedia.org/wiki/Non-linear_least_squares#Extension_by_weights).
+The `paramprior` is used to sample initial guesses for ``\theta``.
+
+Because a distribution is directly constructed [`predictdist`](@ref) will only solve one optimization problem and compute one Jacobian, directly yielding a `MvNormal` and making it very efficient.
+[`predictsamples`](@ref) will simply sample from this distribution, which is also very fast.
 
 # Fields
 $(TYPEDFIELDS)
