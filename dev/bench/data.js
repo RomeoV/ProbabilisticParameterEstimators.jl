@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1716790921371,
+  "lastUpdate": 1716791164314,
   "repoUrl": "https://github.com/RomeoV/ProbabilisticParameterEstimators.jl",
   "entries": {
     "Julia benchmark result": [
@@ -118,6 +118,66 @@ window.BENCHMARK_DATA = {
           {
             "name": "LinearApproxEstimator/small",
             "value": 258160,
+            "unit": "ns",
+            "extra": "gctime=0\nmemory=248160\nallocs=1744\nparams={\"gctrial\":true,\"time_tolerance\":0.05,\"evals_set\":false,\"samples\":10000,\"evals\":1,\"gcsample\":false,\"seconds\":5,\"overhead\":0,\"memory_tolerance\":0.01}"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "romeov@stanford.edu",
+            "name": "Romeo Valentin",
+            "username": "RomeoV"
+          },
+          "committer": {
+            "email": "romeov@stanford.edu",
+            "name": "Romeo Valentin",
+            "username": "RomeoV"
+          },
+          "distinct": true,
+          "id": "18775b47e22be5282647e415f15db3524ea3bcdc",
+          "message": "Undo change in CompatHelper.yml",
+          "timestamp": "2024-05-26T23:23:39-07:00",
+          "tree_id": "e2bf1058b95b614c63a74c8394b0e696337a0b4b",
+          "url": "https://github.com/RomeoV/ProbabilisticParameterEstimators.jl/commit/18775b47e22be5282647e415f15db3524ea3bcdc"
+        },
+        "date": 1716791163418,
+        "tool": "julia",
+        "benches": [
+          {
+            "name": "MCMCEstimator/medium",
+            "value": 129654692.5,
+            "unit": "ns",
+            "extra": "gctime=8670456\nmemory=419851072\nallocs=597598\nparams={\"gctrial\":true,\"time_tolerance\":0.05,\"evals_set\":false,\"samples\":10000,\"evals\":1,\"gcsample\":false,\"seconds\":5,\"overhead\":0,\"memory_tolerance\":0.01}"
+          },
+          {
+            "name": "MCMCEstimator/small",
+            "value": 58702491,
+            "unit": "ns",
+            "extra": "gctime=1930807\nmemory=60758624\nallocs=420687\nparams={\"gctrial\":true,\"time_tolerance\":0.05,\"evals_set\":false,\"samples\":10000,\"evals\":1,\"gcsample\":false,\"seconds\":5,\"overhead\":0,\"memory_tolerance\":0.01}"
+          },
+          {
+            "name": "LSQEstimator/medium",
+            "value": 400726483,
+            "unit": "ns",
+            "extra": "gctime=16350040.5\nmemory=1002370000\nallocs=1651397\nparams={\"gctrial\":true,\"time_tolerance\":0.05,\"evals_set\":false,\"samples\":10000,\"evals\":1,\"gcsample\":false,\"seconds\":5,\"overhead\":0,\"memory_tolerance\":0.01}"
+          },
+          {
+            "name": "LSQEstimator/small",
+            "value": 95731636,
+            "unit": "ns",
+            "extra": "gctime=3042778\nmemory=109224912\nallocs=739460\nparams={\"gctrial\":true,\"time_tolerance\":0.05,\"evals_set\":false,\"samples\":10000,\"evals\":1,\"gcsample\":false,\"seconds\":5,\"overhead\":0,\"memory_tolerance\":0.01}"
+          },
+          {
+            "name": "LinearApproxEstimator/medium",
+            "value": 920890,
+            "unit": "ns",
+            "extra": "gctime=0\nmemory=2193600\nallocs=3824\nparams={\"gctrial\":true,\"time_tolerance\":0.05,\"evals_set\":false,\"samples\":10000,\"evals\":1,\"gcsample\":false,\"seconds\":5,\"overhead\":0,\"memory_tolerance\":0.01}"
+          },
+          {
+            "name": "LinearApproxEstimator/small",
+            "value": 252863,
             "unit": "ns",
             "extra": "gctime=0\nmemory=248160\nallocs=1744\nparams={\"gctrial\":true,\"time_tolerance\":0.05,\"evals_set\":false,\"samples\":10000,\"evals\":1,\"gcsample\":false,\"seconds\":5,\"overhead\":0,\"memory_tolerance\":0.01}"
           }
