@@ -11,21 +11,20 @@ for uncorrelated noise, where the weights ``w_i`` are chosen as the inverse vari
 For correlated noise, the weight results from the whole covariance matrix.
 The `paramprior` is used to sample initial guesses for ``\\theta``.
 
-Therefore [`predictsamples`](@ref) will solve `nsamples` optimization problems and return a sample each.
-[`predictdist`](@ref) will do the same, and then fit a `MvNormal` distribution.
+Therefore [`predictsamples`](@ref) will solve `nsamples` optimization problems and return
+a sample each. [`predictdist`](@ref) will do the same, and then fit a `MvNormal` distribution.
 
 # Fields
 $(TYPEDFIELDS)
 """
-@kwdef struct LSQEstimator{ST<:Function, SAT<:NamedTuple} <: EstimationMethod
+@kwdef struct LSQEstimator{ST <: Function, SAT <: NamedTuple} <: EstimationMethod
     "Function that creates solver algorithm; will be called with autodiff method fixed."
     solvealg::ST = TrustRegion
     "kwargs passed to `NonlinearSolve.solve`. Defaults to `(; reltol=1e-3)`."
-    solveargs::SAT = (; reltol=1e-3)
+    solveargs::SAT = (; reltol = 1e-3)
 end
 solvealg(est::LSQEstimator) = est.solvealg
 solveargs(est::LSQEstimator) = est.solveargs
-
 
 function g(θ, (; xs, ys, noisemodel, f))
     W = covmatrix(noisemodel)
@@ -47,9 +46,10 @@ end
 #     return dr
 # end
 
-function predictsamples(est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable, noisemodel::NoiseModel, nsamples)
+function predictsamples(est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable,
+        noisemodel::NoiseModel, nsamples)
     ysmeas_ = maybeflatten(ysmeas)
-    ps = (; xs, ys=ysmeas_, noisemodel, f)
+    ps = (; xs, ys = ysmeas_, noisemodel, f)
     # solve once for init
     θ₀ = rand(paramprior)
     # in-place doesn't work for our case because size(dr) != size(θ)
@@ -60,13 +60,13 @@ function predictsamples(est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable
         @assert sol.retcode ∈ [ReturnCode.Success, ReturnCode.Stalled] "$((display(sol); sol.retcode))"
         sol.u
     end
-    prob′ = remake(prob; u0=θinit)
+    prob′ = remake(prob; u0 = θinit)
 
     # solve for all noise samples
     θs = map(1:nsamples) do _
         samplednoise = rand(mvnoisedistribution(noisemodel))
         ps_ = @set ps.ys = ps.ys - samplednoise
-        prob′′ = remake(prob′, p=ps_)
+        prob′′ = remake(prob′, p = ps_)
         sol = solve(prob′′, alg; solveargs(est)...)
         @assert sol.retcode ∈ [ReturnCode.Success, ReturnCode.Stalled] "$((display(sol); sol.retcode))"
         sol.u
@@ -74,8 +74,9 @@ function predictsamples(est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable
     θs
 end
 
-function predictdist(est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable, noisemodel::NoiseModel;
-                     nsamples=100)
+function predictdist(
+        est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable, noisemodel::NoiseModel;
+        nsamples = 100)
     samples = predictsamples(est, f, xs, ysmeas, paramprior, noisemodel, nsamples)
-    fit(MvNormal, stack(samples; dims=2))
+    fit(MvNormal, stack(samples; dims = 2))
 end

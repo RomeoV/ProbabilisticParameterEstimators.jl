@@ -5,7 +5,7 @@ makedocs(
     sitename = "ProbabilisticParameterEstimators",
     format = Documenter.HTML(),
     clean = true,
-    checkdocs=:exports,
+    checkdocs = :exports,
     modules = [ProbabilisticParameterEstimators],
     repo = Remotes.GitHub("RomeoV", "ProbabilisticParameterEstimators.jl");
     pages = [
