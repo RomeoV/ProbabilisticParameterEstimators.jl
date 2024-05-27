@@ -2,6 +2,20 @@ using Test
 using ProbabilisticParameterEstimators
 using Distributions
 using LinearAlgebra
+using Aqua
+using JET
+
+@testset "ProbabilisticParameterEstimators.jl" begin
+@testset "Code quality (Aqua.jl)" begin
+    # gotta split this: see https://github.com/JuliaTesting/Aqua.jl/issues/77
+    Aqua.test_all(ProbabilisticParameterEstimators, ambiguities=false)
+    Aqua.test_ambiguities(ProbabilisticParameterEstimators)
+end
+
+@testset "Code linting (JET.jl)" begin
+    JET.test_package(ProbabilisticParameterEstimators;
+                     target_defined_modules = true)
+end
 
 @testset "mvnoisedistribution" begin
     model1 = @test_nowarn UncorrGaussianNoiseModel(
@@ -133,4 +147,5 @@ end
             @test mean(pred) ≈ θtrue rtol = 1e-1
         end
     end
+end
 end
