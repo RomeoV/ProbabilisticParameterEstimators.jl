@@ -28,8 +28,7 @@ solveargs(est::MCMCEstimator) = est.sampleargs
         paramprior::Sampleable, noisemodel::NoiseModel)
     θ ~ paramprior
     ys = maybeflatten(f.(xs, [θ]))
-    # TODO: This shouldn't be a MvNormal
-    ysmeas ~ MvNormal(ys, covmatrix(noisemodel))
+    ysmeas ~ ShiftedDistribution(mvnoisedistribution(noisemodel), ys)
     return
 end
 
