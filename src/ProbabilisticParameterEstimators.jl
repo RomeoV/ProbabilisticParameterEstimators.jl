@@ -34,6 +34,7 @@ maybeflatten(elems::AbstractVector{<:AbstractVector{T}}) where {T <: Real} = red
 maybeflatten(elems::AbstractVector{T}) where {T <: Real} = elems
 
 include("noisemodels.jl")
+include("shifteddistribution.jl")
 include("estimators.jl")
 
 end # module ProbabilisticParameterEstimators
