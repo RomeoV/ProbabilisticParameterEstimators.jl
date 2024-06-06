@@ -1,13 +1,18 @@
 import Distributions: ContinuousMultivariateDistribution, length, sampler, eltype,
-                      _rand!, loglikelihood, _logpdf, _logpdf!, mean, var, entropy, cov
+                      _rand!, loglikelihood, _logpdf, _logpdf!, mean, var, entropy, cov,
+                      MixtureModel, Multivariate, Continuous
 import Random
 
-struct ShiftedDistribution{DT <: ContinuousMultivariateDistribution, ST} <:
+const ContinuousMultivariateDistributionOrMixtureModel = Union{
+    ContinuousMultivariateDistribution,
+    MixtureModel{Multivariate, Continuous}}
+struct ShiftedDistribution{DT <: ContinuousMultivariateDistributionOrMixtureModel, ST} <:
        ContinuousMultivariateDistribution
     D::DT
     shift::ST
     function ShiftedDistribution(
-            D::DT, shift::ST) where {DT <: ContinuousMultivariateDistribution, ST}
+            D::DT, shift::ST) where {
+            DT <: ContinuousMultivariateDistributionOrMixtureModel, ST}
         @assert length(D) == length(shift)
         new{DT, ST}(D, shift)
     end
