@@ -27,10 +27,10 @@ solvealg(est::LSQEstimator) = est.solvealg
 solveargs(est::LSQEstimator) = est.solveargs
 
 function g(θ, (; xs, ys, noisemodel, f))
-    W = covmatrix(noisemodel)
+    Σ = covmatrix(noisemodel)
     preds_ = maybeflatten(f.(xs, [θ]))
     rs = ys - preds_
-    lu(W).L \ rs
+    lu(Σ).L \ rs
 end
 
 # this doesn't really work for our case because size(dr) != size(θ)
@@ -67,11 +67,16 @@ function predictsamples(est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable
         samplednoise = rand(mvnoisedistribution(noisemodel))
         ps_ = @set ps.ys = ps.ys - samplednoise
         prob′′ = remake(prob′, p = ps_)
-        sol = solve(prob′′, alg; solveargs(est)...)
-        @assert sol.retcode ∈ [ReturnCode.Success, ReturnCode.Stalled] "$((display(sol); sol.retcode))"
-        sol.u
+        try
+            sol = solve(prob′′, alg; solveargs(est)...)
+            @assert sol.retcode ∈ [ReturnCode.Success, ReturnCode.Stalled] "$((display(sol); sol.retcode))"
+            sol.u
+        catch
+            missing
+        end
     end
-    θs
+    @assert sum(!ismissing, θs) >= 0.9*nsamples "sum(!ismissing, θs)=$(sum(!ismissing, θs))"
+    collect(skipmissing(θs))
 end
 
 function predictdist(
