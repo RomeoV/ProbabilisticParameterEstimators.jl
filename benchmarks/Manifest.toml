@@ -1,6 +1,6 @@
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.10.3"
+julia_version = "1.10.4"
 manifest_format = "2.0"
 project_hash = "fbf2a72af4480660dd16bccd01940562317655cb"
 
@@ -1301,10 +1301,10 @@ deps = ["Unicode"]
 uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 
 [[deps.ProbabilisticParameterEstimators]]
-deps = ["Accessors", "BlockDiagonals", "Distributions", "DocStringExtensions", "ForwardDiff", "LinearAlgebra", "Logging", "NonlinearSolve", "Turing"]
+deps = ["Accessors", "BlockDiagonals", "Distributions", "DocStringExtensions", "ForwardDiff", "LinearAlgebra", "Logging", "NonlinearSolve", "Random", "Turing"]
 path = ".."
 uuid = "0098cf3f-3e1e-4f11-b01c-dd9dec1b3374"
-version = "0.7.1"
+version = "0.7.6"
 
 [[deps.Profile]]
 deps = ["Printf"]
