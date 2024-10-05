@@ -17,18 +17,18 @@ it very efficient.
 # Fields
 $(TYPEDFIELDS)
 """
-@kwdef struct LinearApproxEstimator{ST <: Function, SAT <: NamedTuple} <: EstimationMethod
-    "Function that creates solver algorithm; will be called with autodiff method fixed."
-    solvealg::ST = TrustRegion
+@kwdef struct LinearApproxEstimator{SAT <: NamedTuple} <: EstimationMethod
     "kwargs passed to `NonlinearSolve.solve`. Defaults to `(; )`."
-    solveargs::SAT = (; reltol = 1e-3)
+    solveargs::SAT = (; abstol = 1.0e-2, maxiters = 1.0e4)
 end
-solvealg(est::LinearApproxEstimator) = est.solvealg
+solvealg(::LinearApproxEstimator) = SimpleGaussNewton
 solveargs(est::LinearApproxEstimator) = est.solveargs
 
-function predictdist(est::LinearApproxEstimator, f, xs, ysmeas,
+function predictdist(
+        est::LinearApproxEstimator, f, xs, ysmeas,
         paramprior::Sampleable, noisemodel::NoiseModel;
-        nsamples = nothing)
+        nsamples = nothing
+    )
     # nsamples is provided for compatibility only
     ysmeas_ = maybeflatten(ysmeas)
     ps = (; xs, ys = ysmeas_, noisemodel, f)
@@ -55,8 +55,10 @@ function predictdist(est::LinearApproxEstimator, f, xs, ysmeas,
     θmean + A * (MvNormal(ysmeas_, Σy) - fpred_)
 end
 
-function predictsamples(est::LinearApproxEstimator, f, xs, ysmeas,
-        paramprior::Sampleable, noisemodel::NoiseModel, nsamples)
+function predictsamples(
+        est::LinearApproxEstimator, f, xs, ysmeas,
+        paramprior::Sampleable, noisemodel::NoiseModel, nsamples
+    )
     dist = predictdist(est, f, xs, ysmeas, paramprior, noisemodel)
     eachcol(rand(dist, nsamples))
 end

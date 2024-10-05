@@ -7,8 +7,8 @@ import Turing
 import Turing: @model, sample, NUTS
 import Logging: with_logger, ConsoleLogger, Warn
 import Accessors: @set
-import SimpleNonlinearSolve: NewtonRaphson, solve, NonlinearLeastSquaresProblem, remake,
-    pickchunksize, AutoForwardDiff, FastShortcutNLLSPolyalg, TrustRegion
+import SimpleNonlinearSolve: solve, NonlinearLeastSquaresProblem, remake, AbstractSimpleNonlinearSolveAlgorithm,
+    AutoForwardDiff, SimpleTrustRegion, SimpleGaussNewton
 import SimpleNonlinearSolve.ReturnCode
 import SimpleNonlinearSolve
 import ForwardDiff.jacobian

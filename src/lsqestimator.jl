@@ -17,13 +17,11 @@ a sample each. [`predictdist`](@ref) will do the same, and then fit a `MvNormal`
 # Fields
 $(TYPEDFIELDS)
 """
-@kwdef struct LSQEstimator{ST <: Function, SAT <: NamedTuple} <: EstimationMethod
-    "Function that creates solver algorithm; will be called with autodiff method fixed."
-    solvealg::ST = TrustRegion
-    "kwargs passed to `NonlinearSolve.solve`. Defaults to `(; reltol=1e-3)`."
-    solveargs::SAT = (; reltol = 1e-3)
+@kwdef struct LSQEstimator{SAT <: NamedTuple} <: EstimationMethod
+    "kwargs passed to `NonlinearSolve.solve`. Defaults to `(; )`."
+    solveargs::SAT = (; abstol = 1.0e-2, maxiters = 1.0e4)
 end
-solvealg(est::LSQEstimator) = est.solvealg
+solvealg(::LSQEstimator) = SimpleGaussNewton
 solveargs(est::LSQEstimator) = est.solveargs
 
 function g(θ, (; xs, ys, noisemodel, f))
@@ -46,14 +44,16 @@ end
 #     return dr
 # end
 
-function predictsamples(est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable,
-        noisemodel::NoiseModel, nsamples)
+function predictsamples(
+        est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable,
+        noisemodel::NoiseModel, nsamples
+    )
     ysmeas_ = maybeflatten(ysmeas)
     ps = (; xs, ys = ysmeas_, noisemodel, f)
     # solve once for init
     θ₀ = rand(paramprior)
     # in-place doesn't work for our case because size(dr) != size(θ)
-    prob = NonlinearLeastSquaresProblem{false}(g, θ₀, ps)
+    prob = NonlinearLeastSquaresProblem(g, θ₀, ps)
     alg = solvealg(est)(; autodiff = AutoForwardDiff(; chunksize = 1))
     θinit = let
         sol = solve(prob, alg; solveargs(est)...)
@@ -75,13 +75,14 @@ function predictsamples(est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable
             missing
         end
     end
-    @assert sum(!ismissing, θs) >= 0.9*nsamples "sum(!ismissing, θs)=$(sum(!ismissing, θs))"
+    @assert sum(!ismissing, θs) >= 0.9 * nsamples "sum(!ismissing, θs)=$(sum(!ismissing, θs))"
     collect(skipmissing(θs))
 end
 
 function predictdist(
         est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable, noisemodel::NoiseModel;
-        nsamples = 100)
+        nsamples = 100
+    )
     samples = predictsamples(est, f, xs, ysmeas, paramprior, noisemodel, nsamples)
     fit(MvNormal, stack(samples; dims = 2))
 end
