@@ -33,7 +33,7 @@ solveargs(est::MCMCEstimator) = est.sampleargs
 end
 
 function predictsamples(est::MCMCEstimator, f, xs, ysmeas,
-        paramprior::Sampleable, noisemodel::NoiseModel, nsamples)
+        paramprior::Sampleable, noisemodel::NoiseModel, nsamples::Int)
     chain = with_logger(ConsoleLogger(Warn)) do  # ignore "Info" outputs.
         alg = solvealg(est)
         sample(bayesianmodel(est, f, xs, maybeflatten(ysmeas), paramprior, noisemodel),
@@ -46,7 +46,7 @@ function predictsamples(est::MCMCEstimator, f, xs, ysmeas,
 end
 function predictdist(
         est::MCMCEstimator, f, xs, ys_meas, paramprior::Sampleable, noisemodel::NoiseModel;
-        nsamples = 100)
+        nsamples::Int = 100)
     samples = predictsamples(est, f, xs, ys_meas, paramprior, noisemodel, nsamples)
     fit(MvNormal, parent(samples))
 end
