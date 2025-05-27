@@ -1,18 +1,18 @@
 module ProbabilisticParameterEstimators
 import BlockDiagonals: BlockDiagonal
-import LinearAlgebra: Diagonal, lu, diag, I
+import LinearAlgebra: Diagonal, lu, diag, I, cholesky, norm
 import Distributions: Normal, MvNormal, var, cov, fit, Distribution, Univariate, Continuous,
                       product_distribution, Sampleable
 import Turing
 import Turing: @model, sample, NUTS
 import Logging: with_logger, ConsoleLogger, Warn
 import Accessors: @set
-import NonlinearSolve: NewtonRaphson, solve, NonlinearLeastSquaresProblem, remake,
-                       pickchunksize, AutoForwardDiff, FastShortcutNLLSPolyalg, TrustRegion
-import NonlinearSolve.ReturnCode
-import NonlinearSolve
+import SimpleNonlinearSolve: SimpleNewtonRaphson, solve, NonlinearLeastSquaresProblem,
+                             remake, pickchunksize, AutoForwardDiff, SimpleTrustRegion
+import NonlinearSolveBase.ReturnCode
 import NonlinearSolveBase: AbsNormSafeBestTerminationMode
 import NonlinearSolveBase.SciMLBase: successful_retcode
+import SimpleNonlinearSolve
 import ForwardDiff.jacobian
 import ForwardDiff
 using DocStringExtensions

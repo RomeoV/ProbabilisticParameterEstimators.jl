@@ -54,7 +54,7 @@ function predictsamples(est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable
     θ₀ = rand(paramprior)
     # in-place doesn't work for our case because size(dr) != size(θ)
     prob = NonlinearLeastSquaresProblem{false}(g, θ₀, ps)
-    alg = solvealg(est)(; autodiff = AutoForwardDiff(; chunksize = 1))
+    alg = solvealg(est)(; autodiff = AutoForwardDiff())
     θinit = let
         # By default "simple" methods do not check for stalled convergence and then just hit maxiters.
         # See https://github.com/SciML/NonlinearSolve.jl/blob/3c111412b0886c24007d4ec6dc945449793db2fa/lib/NonlinearSolveBase/src/termination_conditions.jl#L276-L296.
