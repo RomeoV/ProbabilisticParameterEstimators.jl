@@ -72,7 +72,7 @@ function covmatrix(model::UncorrGaussianNoiseModel{<:Normal})
     Diagonal(var.(model.noisedistributions))
 end
 function covmatrix(model::UncorrGaussianNoiseModel{<:MvNormal})
-    BlockDiagonal(cov.(model.noisedistributions))
+    BlockDiagonal(Matrix.(cov.(model.noisedistributions)))
 end
 covmatrix(model::CorrGaussianNoiseModel) = cov(model.noisedistribution)
 function covmatrix(model::UncorrProductNoiseModel)
