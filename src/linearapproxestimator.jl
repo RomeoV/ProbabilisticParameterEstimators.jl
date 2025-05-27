@@ -19,7 +19,7 @@ $(TYPEDFIELDS)
 """
 @kwdef struct LinearApproxEstimator{ST <: Function, SAT <: NamedTuple} <: EstimationMethod
     "Function that creates solver algorithm; will be called with autodiff method fixed."
-    solvealg::ST = TrustRegion
+    solvealg::ST = (; kwargs...) -> SimpleNewtonRaphson(; kwargs...)
     "kwargs passed to `NonlinearSolve.solve`. Defaults to `(; )`."
     solveargs::SAT = (; reltol = 1e-3)
 end
