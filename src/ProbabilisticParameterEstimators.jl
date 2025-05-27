@@ -5,7 +5,8 @@ import Distributions: Normal, MvNormal, var, cov, fit, Distribution, Univariate,
                       product_distribution, Sampleable
 import Turing
 import Turing: @model, sample, NUTS
-import Logging: with_logger, ConsoleLogger, Warn
+import Logging
+import Logging: with_logger, ConsoleLogger, Warn, global_logger
 import Accessors: @set
 import SimpleNonlinearSolve: SimpleNewtonRaphson, solve, NonlinearLeastSquaresProblem,
                              remake, pickchunksize, AutoForwardDiff, SimpleTrustRegion
