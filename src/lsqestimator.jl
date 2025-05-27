@@ -30,7 +30,7 @@ function g(θ, (; xs, ys, noisemodel, f))
     Σ = covmatrix(noisemodel)
     preds_ = maybeflatten(f.(xs, [θ]))
     rs = ys - preds_
-    lu(Σ).L \ rs
+    cholesky(Σ).L \ rs
 end
 
 # this doesn't really work for our case because size(dr) != size(θ)
