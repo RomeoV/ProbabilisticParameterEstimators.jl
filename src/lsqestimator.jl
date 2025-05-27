@@ -56,8 +56,15 @@ function predictsamples(est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable
     prob = NonlinearLeastSquaresProblem{false}(g, θ₀, ps)
     alg = solvealg(est)(; autodiff = AutoForwardDiff(; chunksize = 1))
     θinit = let
-        sol = solve(prob, alg; solveargs(est)...)
-        @assert sol.retcode ∈ [ReturnCode.Success, ReturnCode.Stalled] "$((display(sol); sol.retcode))"
+        # By default "simple" methods do not check for stalled convergence and then just hit maxiters.
+        # See https://github.com/SciML/NonlinearSolve.jl/blob/3c111412b0886c24007d4ec6dc945449793db2fa/lib/NonlinearSolveBase/src/termination_conditions.jl#L276-L296.
+        # Because "whitened" NLLQ problems such as ours typically stall due to the noise we use the "non-simple" termination condition here.
+        # This is essentially because the noise makes it that the residual is always approximately the norm of white noise with dimension d, which evaluates to `sqrt(d)`.
+        # @RomeoV has more discussion saved in [[id:87424319-6656-44a0-9415-56ebdaedb13a][955b5c32-0c77-4baa-bb32-c61948b8000e.org]].
+        termination_condition = AbsNormSafeBestTerminationMode(
+            Base.Fix2(norm, 2); max_stalled_steps = 32)
+        sol = solve(prob, alg; termination_condition, solveargs(est)...)
+        @assert successful_retcode(sol) "$(sol.retcode)"
         sol.u
     end
     prob′ = remake(prob; u0 = θinit)
@@ -68,8 +75,10 @@ function predictsamples(est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable
         ps_ = @set ps.ys = ps.ys - samplednoise
         prob′′ = remake(prob′, p = ps_)
         try
-            sol = solve(prob′′, alg; solveargs(est)...)
-            @assert sol.retcode ∈ [ReturnCode.Success, ReturnCode.Stalled] "$((display(sol); sol.retcode))"
+            termination_condition = AbsNormSafeBestTerminationMode(
+                Base.Fix2(norm, 2); max_stalled_steps = 32)
+            sol = solve(prob′′, alg; termination_condition, solveargs(est)...)
+            @assert successful_retcode(sol) "$(sol.retcode)"
             sol.u
         catch
             missing

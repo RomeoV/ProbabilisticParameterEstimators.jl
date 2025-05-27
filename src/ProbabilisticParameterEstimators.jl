@@ -11,6 +11,8 @@ import NonlinearSolve: NewtonRaphson, solve, NonlinearLeastSquaresProblem, remak
                        pickchunksize, AutoForwardDiff, FastShortcutNLLSPolyalg, TrustRegion
 import NonlinearSolve.ReturnCode
 import NonlinearSolve
+import NonlinearSolveBase: AbsNormSafeBestTerminationMode
+import NonlinearSolveBase.SciMLBase: successful_retcode
 import ForwardDiff.jacobian
 import ForwardDiff
 using DocStringExtensions
