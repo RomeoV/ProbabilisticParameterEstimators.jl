@@ -20,7 +20,7 @@ $(TYPEDFIELDS)
 @kwdef struct LinearApproxEstimator{ST <: Function, SAT <: NamedTuple} <: EstimationMethod
     "Function that creates solver algorithm; will be called with autodiff method fixed."
     solvealg::ST = (; kwargs...) -> SimpleNewtonRaphson(; kwargs...)
-    "kwargs passed to `NonlinearSolve.solve`. Defaults to `(; )`."
+    "kwargs passed to `NonlinearSolveBase.solve`. Defaults to `(; )`."
     solveargs::SAT = (; reltol = 1e-3)
 end
 solvealg(est::LinearApproxEstimator) = est.solvealg
@@ -51,7 +51,7 @@ function predictdist(est::LinearApproxEstimator, f, xs, ysmeas,
     end
 
     f_ = θ -> maybeflatten(f.(xs, [θ]))
-    J = jacobian(f_, θmean)
+    J = jacobian(f_, AutoForwardDiff(), θmean)
     Σy = covmatrix(noisemodel)
     W = inv(Σy)
     A = (J' * W * J) \ (J' * W)

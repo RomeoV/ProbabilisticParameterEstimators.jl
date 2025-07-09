@@ -8,14 +8,14 @@ import Turing: @model, sample, NUTS
 import Logging
 import Logging: with_logger, ConsoleLogger, Warn, global_logger
 import Accessors: @set
+
+import SimpleNonlinearSolve
 import SimpleNonlinearSolve: SimpleNewtonRaphson, solve, NonlinearLeastSquaresProblem,
                              remake, pickchunksize, AutoForwardDiff, SimpleTrustRegion
 import NonlinearSolveBase.ReturnCode
 import NonlinearSolveBase: AbsNormSafeBestTerminationMode
-import NonlinearSolveBase.SciMLBase: successful_retcode
-import SimpleNonlinearSolve
-import ForwardDiff.jacobian
-import ForwardDiff
+import SciMLBase: successful_retcode
+import DifferentiationInterface: jacobian
 using DocStringExtensions
 
 import Base: show

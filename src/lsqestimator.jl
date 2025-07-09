@@ -20,7 +20,7 @@ $(TYPEDFIELDS)
 @kwdef struct LSQEstimator{ST <: Function, SAT <: NamedTuple} <: EstimationMethod
     "Function that creates solver algorithm; will be called with autodiff method fixed."
     solvealg::ST = (; kwargs...) -> SimpleNewtonRaphson(; kwargs...)
-    "kwargs passed to `NonlinearSolve.solve`. Defaults to `(; reltol=1e-3)`."
+    "kwargs passed to `NonlinearSolveBase.solve`. Defaults to `(; reltol=1e-3)`."
     solveargs::SAT = (; reltol = 1e-3)
 end
 solvealg(est::LSQEstimator) = est.solvealg
@@ -84,7 +84,7 @@ function predictsamples(est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable
             missing
         end
     end
-    @assert sum(!ismissing, θs) >= 0.9*nsamples "sum(!ismissing, θs)=$(sum(!ismissing, θs))"
+    @assert sum(!ismissing, θs)>=0.9 * nsamples "sum(!ismissing, θs)=$(sum(!ismissing, θs))"
     collect(skipmissing(θs))
 end
 
