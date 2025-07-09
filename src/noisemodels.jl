@@ -20,13 +20,13 @@ Model Gaussian noise *within* observations, but without correlation between obse
 # Fields:
 $(TYPEDFIELDS)
 """
-struct UncorrGaussianNoiseModel{DT} <:
-       UncorrNoiseModel where {DT <: Union{<:MvNormal, <:Normal}}
+struct UncorrGaussianNoiseModel{
+    DT <: Union{<:Normal, <:MvNormal}, VT <: AbstractVector{DT}} <: UncorrNoiseModel
     """
     A vector of (possibly multivariate) Gaussian noise distributions with type `DT`,
     one for each observation.
     """
-    noisedistributions::Vector{DT}
+    noisedistributions::VT
 end
 
 """
@@ -37,8 +37,9 @@ Model arbitrary noise for univariate observations, without correlation between o
 # Fields:
 $(TYPEDFIELDS)
 """
-struct UncorrProductNoiseModel{DT} <:
-       UncorrNoiseModel where {DT <: Distribution{Univariate, Continuous}}
+struct UncorrProductNoiseModel{
+    DT <: Distribution{Univariate, Continuous}, VT <: AbstractVector{DT}} <:
+       UncorrNoiseModel
     """
     A vector of univariate noise distributions of any kind with type `DT`. Can not model
     correlations within a single observation.
@@ -51,7 +52,7 @@ end
 
 Model noise possibly correlated between observations with a single large MvNormal.
 """
-struct CorrGaussianNoiseModel{DT} <: NoiseModel where {DT <: MvNormal}
+struct CorrGaussianNoiseModel{DT <: MvNormal} <: NoiseModel
     """
     A single multivariate normal distribution with type `DT`, with a noise component 
     for each component in each observation.
