@@ -37,7 +37,7 @@ using JET
                     p * x^k
                 end
 
-            xs = 5 * eachcol(rand(2, 8))
+            xs = 5 * eachcol(1 .+ rand(2, 8))
             θtrue = [5.0, 10]
             prior = MvNormal(θtrue, 0.5^2 * I)
             noises = [0.1 * rand() * Normal() for _ in eachindex(xs)]
@@ -143,7 +143,7 @@ using JET
                     p * x^k
                 end
 
-            xs = 5 * eachcol(rand(2, 30))
+            xs = 5 * eachcol(1 .+ rand(2, 30))
             θtrue = [5.0, 10]
             prior = MvNormal(θtrue, 0.5^2 * I)
             n = length(xs)
