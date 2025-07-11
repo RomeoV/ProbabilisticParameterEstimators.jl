@@ -38,8 +38,13 @@ either as a prior for bayesian methods, or to sample initial guesses for iterati
 function predictdist(
         ::EstimationMethod, f, xs, ys, paramprior::Sampleable, noise_model::NoiseModel) end
 
-include("mcmcestimator.jl")
-include("lsqestimator.jl")
+make_g(f) = (θ, ps)->begin
+    (; xs, ys, noisemodel) = ps
+    Σ = covmatrix(noisemodel)
+    preds_ = maybeflatten([f(x, θ) for x in xs])
+    rs = ys - preds_
+    cholesky(Σ).L \ rs
+end
 
 @kwdef struct ProblemParams{XT, YT, NT<:NoiseModel}
   xs::XT
@@ -48,3 +53,5 @@ include("lsqestimator.jl")
 end
 
 include("linearapproxestimator.jl")
+include("lsqestimator.jl")
+include("mcmcestimator.jl")

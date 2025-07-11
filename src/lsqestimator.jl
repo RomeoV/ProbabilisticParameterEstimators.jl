@@ -26,36 +26,16 @@ end
 solvealg(est::LSQEstimator) = est.solvealg
 solveargs(est::LSQEstimator) = est.solveargs
 
-function g(θ, (; xs, ys, noisemodel, f))
-    Σ = covmatrix(noisemodel)
-    preds_ = maybeflatten(f.(xs, [θ]))
-    rs = ys - preds_
-    cholesky(Σ).L \ rs
-end
-
-# this doesn't really work for our case because size(dr) != size(θ)
-# function g!(dr, θ, (; xs, ys, noisemodel, f))
-#     W = covmatrix(noisemodel)
-#     # ys_ = reduce(vcat, ys)
-#     # preds_ = reduce(vcat, f.(xs, [θ]))
-#     preds_ = maybeflatten(f.(xs, [θ]))
-#     rs = ys - preds_
-#     @show size(rs)
-#     @show size(dr)
-#     dr .= lu(W).L \ rs
-#     return dr
-# end
-
 function predictsamples(est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable,
         noisemodel::NoiseModel, nsamples)
     ysmeas_ = maybeflatten(ysmeas)
-    ps = (; xs, ys = ysmeas_, noisemodel, f)
-    # solve once for init
-    θ₀ = rand(paramprior)
     ps = ProblemParams(; xs, ys = ysmeas_, noisemodel)
+    θ₀ = rand!(paramprior, similar(mean(paramprior)))
+    g_ = make_g(f)
     # in-place doesn't work for our case because size(dr) != size(θ)
-    prob = NonlinearLeastSquaresProblem{false}(g, θ₀, ps)
+    prob = NonlinearLeastSquaresProblem{false}(g_, θ₀, ps)
     alg = solvealg(est)(; autodiff = AutoForwardDiff())
+    # solve once for init
     θinit = let
         # By default "simple" methods do not check for stalled convergence and then just hit maxiters.
         # See https://github.com/SciML/NonlinearSolve.jl/blob/3c111412b0886c24007d4ec6dc945449793db2fa/lib/NonlinearSolveBase/src/termination_conditions.jl#L276-L296.
@@ -71,22 +51,23 @@ function predictsamples(est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable
     prob′ = remake(prob; u0 = θinit)
 
     # solve for all noise samples
-    θs = map(1:nsamples) do _
+    solresults = map(1:nsamples) do _
         samplednoise = rand(mvnoisedistribution(noisemodel))
         ps_ = @set ps.ys = ps.ys - samplednoise
         prob′′ = remake(prob′, p = ps_)
-        try
+        sol = let
             termination_condition = AbsNormSafeBestTerminationMode(
                 Base.Fix2(norm, 2); max_stalled_steps = 32)
             sol = solve(prob′′, alg; termination_condition, solveargs(est)...)
-            @assert successful_retcode(sol) "$(sol.retcode)"
-            sol.u
-        catch
-            missing
         end
+        sol
     end
-    @assert sum(!ismissing, θs)>=0.9 * nsamples "sum(!ismissing, θs)=$(sum(!ismissing, θs))"
-    collect(skipmissing(θs))
+    if sum(successful_retcode, solresults; init=0) >= 0.9 * nsamples
+        convergedsols = filter(successful_retcode, solresults)
+        return [sol.u for sol in convergedsols]
+    else
+        error("More than 10% of estimates failed.")
+    end
 end
 
 function predictdist(
