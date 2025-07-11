@@ -2,6 +2,7 @@ using Test
 using ProbabilisticParameterEstimators
 using Distributions
 using LinearAlgebra
+using StaticArrays
 using Aqua
 using JET
 
@@ -160,6 +161,43 @@ using JET
                 pred = @test_nowarn predictdist(
                     est, f, xs, ysmeas, prior, noisemodel; nsamples = 100)
                 @test mean(pred)≈θtrue rtol=1e-1
+            end
+        end
+    end
+    @testset "type inference" begin
+        @testset "univariate measurements" begin
+            f(xs, ps) =
+                sum(enumerate(zip(ps, xs))) do (k, (p, x))
+                    p * x^k
+                end
+
+            xs = 5 * eachcol(SMatrix{2,8}(rand(2, 8)))
+            θtrue = SA[5.0, 10]
+            prior = MvNormal(θtrue, 0.5^2 * I)
+            noises = [0.1 * rand() * Normal() for _ in eachindex(xs)]
+            noisemodel = UncorrGaussianNoiseModel(noises)
+            ysmeas = f.(xs, [θtrue]) .+ rand.(noises)
+
+            @testset for est in [LinearApproxEstimator(), LSQEstimator()]
+                @test_opt @inbounds predictsamples(est, f, xs, ysmeas, prior, noisemodel, 100)
+                @test_opt @inbounds predictdist(est, f, xs, ysmeas, prior, noisemodel)
+            end
+        end
+        @testset "multivariate measurements" begin
+            f(x, p) = SA[(x + 1)^2 - sum(p);
+                         (x + 1)^3 + diff(p)[1]]
+
+            xs = SVector{5}(rand(5))
+            θtrue = SA[1.0, 2.0]
+            prior = MvNormal(zeros(2), 1.0 * I)
+            noises = [rand() / 10 * I(2) * MvNormal(zeros(2), I) for _ in eachindex(xs)]
+            # noises = [rand() * Normal() for _ in eachindex(xs)]
+            noisemodel = UncorrGaussianNoiseModel(noises)
+            ysmeas = f.(xs, [θtrue]) .+ rand.(noises)
+
+            @testset for est in [LinearApproxEstimator(), LSQEstimator()]
+                @test_opt @inbounds predictsamples(est, f, xs, ysmeas, prior, noisemodel, 100)
+                @test_opt @inbounds predictdist(est, f, xs, ysmeas, prior, noisemodel; nsamples = 100)
             end
         end
     end
