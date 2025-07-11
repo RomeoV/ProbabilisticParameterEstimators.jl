@@ -44,7 +44,7 @@ struct UncorrProductNoiseModel{
     A vector of univariate noise distributions of any kind with type `DT`. Can not model
     correlations within a single observation.
     """
-    noisedistributions::Vector{DT}
+    noisedistributions::VT
 end
 
 """
