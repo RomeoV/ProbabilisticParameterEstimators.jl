@@ -1,9 +1,6 @@
 import SciMLBase
 import SciMLBase.get_root_indp
 
-# at the time of writing, with SciMLBase v2.102.1, this is required to not trigger a type inference issue...
-SciMLBase.get_root_indp(prob::NonlinearLeastSquaresProblem{_inplace, _spec, <:ProblemParams}) where {_inplace, _spec} = prob.p
-
 """
     abstract type EstimationMethod
 
@@ -51,6 +48,8 @@ end
   ys::YT
   noisemodel::NT
 end
+# at the time of writing, with SciMLBase v2.102.1, this is required to not trigger a type inference issue...
+SciMLBase.get_root_indp(prob::NonlinearLeastSquaresProblem{_inplace, _spec, <:ProblemParams}) where {_inplace, _spec} = prob.p
 
 include("linearapproxestimator.jl")
 include("lsqestimator.jl")
