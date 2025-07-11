@@ -1,8 +1,4 @@
 import Random: rand!
-import SciMLBase.get_root_indp
-
-# as of SciMLBase v2.102.1 this is required to not trigger a type inference issue...
-SciMLBase.get_root_indp(prob::NonlinearLeastSquaresProblem) = prob.p
 
 """
     $(TYPEDEF)
@@ -37,7 +33,7 @@ function predictdist(est::LinearApproxEstimator, f, xs, ysmeas,
         nsamples = nothing)
     # nsamples is provided for compatibility only
     ysmeas_ = maybeflatten(ysmeas)
-    ps = (; xs, ys = ysmeas_, noisemodel, f)
+    ps = ProblemParams(; xs, ys = ysmeas_, noisemodel)
     # solve once for init
     θ₀ = rand!(paramprior, similar(mean(paramprior)))
     # in-place doesn't work for our case because size(dr) != size(θ)
