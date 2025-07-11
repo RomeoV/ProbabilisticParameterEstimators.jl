@@ -36,10 +36,9 @@ function predictdist(est::LinearApproxEstimator, f, xs, ysmeas,
     ps = ProblemParams(; xs, ys = ysmeas_, noisemodel)
     # solve once for init
     θ₀ = rand!(paramprior, similar(mean(paramprior)))
+    g = make_g(f)
     # in-place doesn't work for our case because size(dr) != size(θ)
-    prob = with_logger(NullLogger) do
-        NonlinearLeastSquaresProblem{false}(g, θ₀, ps)
-    end
+    prob = NonlinearLeastSquaresProblem{false}(g, θ₀, ps)
     alg = solvealg(est)(; autodiff = AutoForwardDiff())
     θmean = let
         # By default "simple" methods do not check for stalled convergence and then just hit maxiters.
