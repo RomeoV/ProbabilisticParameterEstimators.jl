@@ -1,4 +1,8 @@
 import Random: rand!
+import SciMLBase.get_root_indp
+
+# as of SciMLBase v2.102.1 this is required to not trigger a type inference issue...
+SciMLBase.get_root_indp(prob::NonlinearLeastSquaresProblem) = prob.p
 
 """
     $(TYPEDEF)
