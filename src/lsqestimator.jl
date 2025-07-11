@@ -52,6 +52,7 @@ function predictsamples(est::LSQEstimator, f, xs, ysmeas, paramprior::Sampleable
     ps = (; xs, ys = ysmeas_, noisemodel, f)
     # solve once for init
     θ₀ = rand(paramprior)
+    ps = ProblemParams(; xs, ys = ysmeas_, noisemodel)
     # in-place doesn't work for our case because size(dr) != size(θ)
     prob = NonlinearLeastSquaresProblem{false}(g, θ₀, ps)
     alg = solvealg(est)(; autodiff = AutoForwardDiff())

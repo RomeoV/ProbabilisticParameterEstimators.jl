@@ -1,3 +1,9 @@
+import SciMLBase
+import SciMLBase.get_root_indp
+
+# at the time of writing, with SciMLBase v2.102.1, this is required to not trigger a type inference issue...
+SciMLBase.get_root_indp(prob::NonlinearLeastSquaresProblem{_inplace, _spec, <:ProblemParams}) where {_inplace, _spec} = prob.p
+
 """
     abstract type EstimationMethod
 
@@ -34,4 +40,11 @@ function predictdist(
 
 include("mcmcestimator.jl")
 include("lsqestimator.jl")
+
+@kwdef struct ProblemParams{XT, YT, NT<:NoiseModel}
+  xs::XT
+  ys::YT
+  noisemodel::NT
+end
+
 include("linearapproxestimator.jl")
