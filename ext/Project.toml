@@ -1,0 +1,13 @@
+name = "ProbabilisticParameterEstimatorsTuringExt"
+uuid = "d0f0d3a4-8c8d-4f8b-9e1d-4e0ddfe7e1e1"
+authors = ["Romeo Valentin <romeov@stanford.edu>"]
+version = "0.8.1"
+
+[deps]
+ProbabilisticParameterEstimators = "0098cf3f-3e1e-4f11-b01c-dd9dec1b3374"
+Turing = "fce5fe82-541a-59a6-adf8-730c64b5f9a0"
+
+[compat]
+ProbabilisticParameterEstimators = "0.8"
+Turing = "0.32,0.33,0.34,0.35,0.36,0.37,0.38,0.39"
+julia = "1.11"

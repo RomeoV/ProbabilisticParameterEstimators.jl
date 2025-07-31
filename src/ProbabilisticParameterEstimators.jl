@@ -3,8 +3,6 @@ import BlockDiagonals: BlockDiagonal
 import LinearAlgebra: Diagonal, lu, diag, I, cholesky, norm
 import Distributions: Normal, MvNormal, var, cov, fit, Distribution, Univariate, Continuous,
                       product_distribution, Sampleable
-import Turing
-import Turing: @model, sample, NUTS
 import Logging
 import Logging: with_logger, ConsoleLogger, Warn, global_logger
 import Accessors: @set
@@ -21,8 +19,7 @@ using DocStringExtensions
 import Base: show
 
 export UncorrGaussianNoiseModel, CorrGaussianNoiseModel, UncorrProductNoiseModel
-export MCMCEstimator, LSQEstimator, LinearApproxEstimator
-export predictsamples, predictdist
+export LSQEstimator, LinearApproxEstimator
 export mvnoisedistribution, covmatrix
 
 """

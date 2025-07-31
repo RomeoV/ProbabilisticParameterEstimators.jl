@@ -30,9 +30,8 @@ xs = rand(5)
 ysmeas = f.(xs, [θtrue]) .+ rand.(noises)
 
 # find a probabilistic description of θ either as samples or as a distribution
-# currently we provide three methods
-for est in [MCMCEstimator(),
-            LinearApproxEstimator(),
+# currently we provide three methods (MCMCEstimator requires the Turing extension)
+for est in [LinearApproxEstimator(),
             LSQEstimator()]
     # either
     samples =  predictsamples(est, f, xs, ysmeas, paramprior, noisemodel, 100)
@@ -53,7 +52,9 @@ The conversion between samples and a distribution can be done automatically via 
 ![Estimator Overview](docs/src/assets/distribution_graph/distribution_graph.png)
 
 ### MCMCEstimator
-The `MCMCEstimator` simply phrases the problem as a Monte-Carlo Markov-Chain inference problem, which we solve using the `NUTS` algorithm provided by `Turing.jl`.
+The `MCMCEstimator` has been moved to a separate extension package `ProbabilisticParameterEstimatorsTuringExt` to avoid requiring `Turing.jl` as a dependency for the main package.
+To use the `MCMCEstimator`, please install the extension package and use `using ProbabilisticParameterEstimatorsTuringExt`.
+The estimator simply phrases the problem as a Monte-Carlo Markov-Chain inference problem, which we solve using the `NUTS` algorithm provided by `Turing.jl`.
 Therefore `predictdist(::MCMCEstimator, f, xs, ys, paramprior, noisemodel, nsamples)` will create `nsamples` samples (after skipping a number of warmup steps).
 `predictdist(::MCMCEstimator, f, xs, ys, paramprior, noisemodel, nsamples)` will do the same, and then fit a `MvNormal` distribution.
 
