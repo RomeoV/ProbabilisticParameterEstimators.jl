@@ -6,6 +6,7 @@ LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 ProbabilisticParameterEstimators = "0098cf3f-3e1e-4f11-b01c-dd9dec1b3374"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+Turing = "fce5fe82-541a-59a6-adf8-730c64b5f9a0"
 
-[sources.ProbabilisticParameterEstimators]
-path = ".."
+[sources]
+ProbabilisticParameterEstimators = {path = ".."}

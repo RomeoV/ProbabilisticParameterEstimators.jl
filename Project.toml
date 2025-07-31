@@ -16,7 +16,12 @@ NonlinearSolveBase = "be0214bd-f91f-a760-ac4e-3421ce2b2da0"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 SciMLBase = "0bca4576-84f4-4d90-8ffe-ffa030f20462"
 SimpleNonlinearSolve = "727e6d20-b764-4bd8-a329-72de5adea6c7"
+
+[weakdeps]
 Turing = "fce5fe82-541a-59a6-adf8-730c64b5f9a0"
+
+[extensions]
+TuringExt = "Turing"
 
 [compat]
 Accessors = "0.1"

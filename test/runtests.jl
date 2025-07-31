@@ -1,5 +1,6 @@
 using Test
 using ProbabilisticParameterEstimators
+using Turing
 using Distributions
 using LinearAlgebra
 using StaticArrays
