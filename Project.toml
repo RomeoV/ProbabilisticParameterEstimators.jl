@@ -20,6 +20,10 @@ SimpleNonlinearSolve = "727e6d20-b764-4bd8-a329-72de5adea6c7"
 [weakdeps]
 Turing = "fce5fe82-541a-59a6-adf8-730c64b5f9a0"
 
+[sources.BlockDiagonals]
+rev = "master"
+url = "https://github.com/RomeoV/BlockDiagonals.jl"
+
 [extensions]
 TuringExt = "Turing"
 
@@ -36,8 +40,5 @@ NonlinearSolveBase = "1"
 Random = "1"
 SciMLBase = "2"
 SimpleNonlinearSolve = "2"
-Turing = "0.32,0.33,0.34,0.35,0.36,0.37,0.38,0.39"
+Turing = "0.32,0.33,0.34,0.35,0.36,0.37,0.38,0.39, 0.40"
 julia = "1.11"
-
-[sources]
-BlockDiagonals = {url="https://github.com/RomeoV/BlockDiagonals.jl", rev="master"}
